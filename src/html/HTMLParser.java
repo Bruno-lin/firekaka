@@ -112,17 +112,17 @@ public class HTMLParser {
 
     private ElementNode parse_element() {
         //开始标签
-        assert (consume_char() == '<');
+        assert consume_char() == '<';
         String tag_name = parse_tag_name();
         Map<String, String> attrs = parse_attributes();
-        assert (consume_char() == '>');
+        assert consume_char() == '>';
         //内容
         ArrayList<Node> children = parse_nodes();
         //结束标签
-        assert (consume_char() == '<');
-        assert (consume_char() == '/');
-        assert (parse_tag_name().equals(tag_name));
-        assert (consume_char() == '>');
+        assert consume_char() == '<';
+        assert consume_char() == '/';
+        assert parse_tag_name().equals(tag_name);
+        assert consume_char() == '>';
 
         return new ElementNode(tag_name, attrs, children);
 
@@ -134,7 +134,7 @@ public class HTMLParser {
 
     private String[] parse_attr() {
         String name = parse_tag_name();
-        assert (consume_char() == '=');
+        assert consume_char() == '=';
         String value = parse_attr_value();
         String[] parseAttr = new String[]{name, value};
         return parseAttr;
@@ -145,9 +145,9 @@ public class HTMLParser {
      */
     private String parse_attr_value() {
         char open_quote = consume_char();
-        assert (open_quote == '"' || open_quote == '\'');
+        assert open_quote == '"' || open_quote == '\'';
         String value = consume_while(c -> next_char() != c, open_quote);
-        assert (consume_char() == open_quote);
+        assert consume_char() == open_quote;
         return value;
     }
 

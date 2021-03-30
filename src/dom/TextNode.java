@@ -1,13 +1,20 @@
 package dom;
 
 public class TextNode extends Node {
-    String text;
-    ElementNode elementNode;
+        String text;
+        public TextNode(String text){
+            super();
+            node_type = "text";
 
-    public TextNode(String text) {
-        this.text = text;
-    }
+            this.tag_name = "text_";
+            this.text = text;
+        }
+        public TextNode(){
+            super();
+        }
 
-    public TextNode(){
+        @Override
+        public String toString() {
+            return text;
+        }
     }
-}

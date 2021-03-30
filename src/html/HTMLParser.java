@@ -29,7 +29,7 @@ public class HTMLParser {
     /**
      * 下一个字符是否以给定的字符串开始
      */
-    private boolean start_with(int n, char c) {
+    private boolean start_with(int n, char[] c) {
         return input.substring(pos, pos + n).equals(c);
     }
 
@@ -37,7 +37,7 @@ public class HTMLParser {
      * 如果读完了所有输入的字符，则返回true。
      */
     private boolean eof() {
-        return input.charAt(pos) >= input.length();
+        return pos >= input.length() - 1;
     }
 
     /**
@@ -65,7 +65,10 @@ public class HTMLParser {
      * 读取多个（也可能是零个）空白字符
      */
     private void consume_whitespace() {
-        if (Character.isWhitespace(next_char())) {
+        if (eof()) {
+            return;
+        }
+        while (Character.isWhitespace(next_char())) {
             consume_char();
         }
     }
@@ -76,7 +79,7 @@ public class HTMLParser {
      */
     private String parse_tag_name() {
         StringBuilder sb = new StringBuilder();
-        while (Pattern.matches("[a-zA-Z0-9]", String.valueOf(consume_char()))) {
+        while (Pattern.matches("[a-zA-Z0-9]", String.valueOf(next_char()))) {
             sb.append(consume_char());
         }
         return sb.toString();
@@ -87,7 +90,7 @@ public class HTMLParser {
      */
 
     private Node parse_node() {
-        if (consume_char() == '<') {
+        if (next_char() == '<') {
             return parse_element();
         } else {
             return parse_text();
@@ -100,8 +103,7 @@ public class HTMLParser {
 
     private TextNode parse_text() {
         String text = consume_while(c -> next_char() != c, '<');
-        TextNode tn = new TextNode(text);
-        return tn;
+        return new TextNode(text);
     }
 
     /**
@@ -109,16 +111,17 @@ public class HTMLParser {
      */
 
     private ElementNode parse_element() {
+        //开始标签
         assert !(consume_char() == '<');
         String tag_name = parse_tag_name();
         Map<String, String> attrs = parse_attributes();
         assert !(consume_char() == '>');
-
+        //内容
         ArrayList<Node> children = parse_nodes();
-
+        //结束标签
         assert !(consume_char() == '<');
         assert !(consume_char() == '/');
-        assert !(parse_tag_name() == tag_name);
+        assert !(parse_tag_name().equals(tag_name));
         assert !(consume_char() == '>');
 
         return new ElementNode(tag_name, attrs, children);
@@ -153,8 +156,11 @@ public class HTMLParser {
      */
     private Map<String, String> parse_attributes() {
         Map<String, String> attrMap = new HashMap<>();
-        while (next_char() != '>') {
+        while (true) {
             consume_whitespace();
+            if (next_char() == '>') {
+                break;
+            }
             attrMap.put(parse_attr()[0], parse_attr()[1]);
         }
         return attrMap;
@@ -165,8 +171,11 @@ public class HTMLParser {
      */
     private ArrayList<Node> parse_nodes() {
         ArrayList<Node> nodes = new ArrayList<>();
-        while (!eof() || !start_with(1, '<') || !start_with(1, '/')) {
+        while (true) {
             consume_whitespace();
+            if (eof() || start_with(2, new char[]{'<', '/'})) {
+                break;
+            }
             nodes.add(parse_node());
         }
         return nodes;
@@ -182,7 +191,7 @@ public class HTMLParser {
         if (nodes.size() == 1) {
             return nodes.get(0);
         } else {
-            return new ElementNode("html", new HashMap<String, String>(), nodes);
+            return new ElementNode("html", new HashMap<>(), nodes);
         }
     }
 }

@@ -1,6 +1,7 @@
 import dom.Node;
 import html.HTMLParser;
 
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,7 +15,6 @@ public class HTMLTest {
         HTMLParser parser = new HTMLParser();
         Node node = parser.parse(input);
         String output = node.toString();
-        System.out.println(output);
 
         assert output.equals(expectedOutput);
     }

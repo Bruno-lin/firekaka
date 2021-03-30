@@ -13,9 +13,4 @@ public class TextNode extends Node {
     public TextNode() {
         super();
     }
-
-//    @Override
-//    public String toString() {
-//        return text;
-//    }
 }

@@ -9,8 +9,8 @@ import java.nio.file.Path;
 
 public class HTMLTest {
     public static void main(String[] args) throws IOException {
-        String input = Files.readString(Path.of("res/html-input.html"), StandardCharsets.UTF_8);
-        String expectedOutput = Files.readString(Path.of("res/html-output.html"), StandardCharsets.UTF_8);
+        String input = Files.readString(Path.of("/home/brunozzz/IdeaProjects/firekaka/res/html-input.html"), StandardCharsets.UTF_8);
+        String expectedOutput = Files.readString(Path.of("/home/brunozzz/IdeaProjects/firekaka/res/html-output.html"), StandardCharsets.UTF_8);
 
         HTMLParser parser = new HTMLParser();
         Node node = parser.parse(input);

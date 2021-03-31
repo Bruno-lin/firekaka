@@ -30,7 +30,7 @@ public class HTMLParser {
      * 下一个字符是否以给定的字符串开始
      */
     private boolean start_with(int n, char[] c) {
-        return input.substring(pos, pos + n).equals(c);
+        return input.substring(pos, pos + n).equals(String.valueOf(c));
     }
 
     /**
@@ -121,7 +121,8 @@ public class HTMLParser {
         //结束标签
         assert consume_char() == '<';
         assert consume_char() == '/';
-        assert parse_tag_name().equals(tag_name);
+        String tag_name_next = parse_tag_name();
+        assert tag_name_next.equals(tag_name);
         assert consume_char() == '>';
 
         return new ElementNode(tag_name, attrs, children);
@@ -133,11 +134,11 @@ public class HTMLParser {
      */
 
     private String[] parse_attr() {
-        String name = parse_tag_name();
+        String[] attr = new String[2];
+        attr[0] = parse_tag_name();
         assert consume_char() == '=';
-        String value = parse_attr_value();
-        String[] parseAttr = new String[]{name, value};
-        return parseAttr;
+        attr[1] = parse_attr_value();
+        return attr;
     }
 
     /**
@@ -145,7 +146,7 @@ public class HTMLParser {
      */
     private String parse_attr_value() {
         char open_quote = consume_char();
-        assert open_quote == '"' || open_quote == '\'';
+        assert (open_quote == '"' || open_quote == '\'');
         String value = consume_while(c -> next_char() != c, open_quote);
         assert consume_char() == open_quote;
         return value;
@@ -161,7 +162,8 @@ public class HTMLParser {
             if (next_char() == '>') {
                 break;
             }
-            attrMap.put(parse_attr()[0], parse_attr()[1]);
+            String[] attr = parse_attr();
+            attrMap.put(attr[0], attr[1]);
         }
         return attrMap;
     }
@@ -173,7 +175,7 @@ public class HTMLParser {
         ArrayList<Node> nodes = new ArrayList<>();
         while (true) {
             consume_whitespace();
-            if (eof() || start_with(2, new char[]{'<', '/'})) {
+            if (eof() || start_with(2, new char[]{'<','/'})) {
                 break;
             }
             nodes.add(parse_node());

@@ -62,6 +62,7 @@ public class CSSParser extends Parser {
                 break;
             }
         }
+        System.out.println(selector);
         return selector;
     }
 
@@ -135,7 +136,7 @@ public class CSSParser extends Parser {
     }
 
     /**
-     * @return
+     * 解析标识符
      */
     public String parse_identifier() {
         StringBuilder sb = new StringBuilder();

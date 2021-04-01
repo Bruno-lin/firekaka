@@ -1,5 +1,4 @@
 import css.CSSParser;
-import parser.Parser;
 import css.Stylesheet;
 
 import java.io.IOException;
@@ -15,7 +14,7 @@ public class CSSTest {
         CSSParser parser = new CSSParser();
         Stylesheet stylesheet = parser.parse(input);
         String output = stylesheet.toString();
-
+        System.out.println(output);
         assert output.equals(expectedOutput);
     }
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 public class ElementNode extends Node {
 
     public ElementNode(String tag_name, Map<String,String> attrs, ArrayList<Node> children) {
-        super();
         node_type = "element";
         this.tag_name = tag_name;
         this.attrs = attrs;
@@ -14,6 +13,6 @@ public class ElementNode extends Node {
     }
 
     public ElementNode() {
-        super();
+
     }
 }

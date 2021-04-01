@@ -50,7 +50,7 @@ public class CSSParser extends Parser {
             char c = next_char();
             if (c == '#') {
                 consume_char();
-                selector.id = '#' + parse_identifier();
+                selector.id = parse_identifier();
             } else if (c == '.') {
                 consume_char();
                 selector.class_array.add(parse_identifier());
@@ -62,7 +62,7 @@ public class CSSParser extends Parser {
                 break;
             }
         }
-        System.out.println(selector);
+
         return selector;
     }
 
@@ -83,6 +83,7 @@ public class CSSParser extends Parser {
         }
         //首先返回具有最高优先级的选择器，以用于匹配。
         selectors.sort(Comparator.comparingInt(Selector::specificity));
+
         return selectors;
     }
 
@@ -102,7 +103,6 @@ public class CSSParser extends Parser {
      */
     public Declaration parse_declaration() {
         String property_name = parse_identifier();
-        consume_whitespace();
         assert consume_char() == ':';
         consume_whitespace();
         String value = parse_value();
@@ -141,8 +141,8 @@ public class CSSParser extends Parser {
     public String parse_identifier() {
         StringBuilder sb = new StringBuilder();
         consume_whitespace();
-        while (Pattern.matches("[A-Za-z0-9]", String.valueOf(next_char()))) {
-            sb.append(next_char());
+        while (Pattern.matches("[A-Za-z0-9\\-]", String.valueOf(next_char()))) {
+            sb.append(consume_char());
         }
         return sb.toString();
     }

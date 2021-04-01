@@ -27,17 +27,19 @@ public class Stylesheet {
                 }
 
                 if (selector.class_array.size() != 0) {
-                    for (String className : selector.class_array) {
-                        sb1.append('.').append(className);
+                    for (String class_array : selector.class_array) {
+                        sb1.append('.').append(class_array);
                     }
                 }
-                list.add(sb1.toString());
+                if (!String.valueOf(sb1).equals("")) {
+                    list.add(sb1.toString());
+                }
             }
             sb.append(String.join(", ", list));
             sb.append(" {\n");
 
             for (Declaration declaration : rule.declarations) {
-                sb.append("  ").append(declaration.name).append(": ").append(declaration.value.toString()).append(";\n");
+                sb.append("  ").append(declaration.name).append(": ").append(declaration.value).append(";\n");
             }
             sb.append("}\n\n");
         }

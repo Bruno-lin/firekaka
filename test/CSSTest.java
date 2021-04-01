@@ -15,6 +15,7 @@ public class CSSTest {
         Stylesheet stylesheet = parser.parse(input);
         String output = stylesheet.toString();
         System.out.println(output);
+        System.out.println(expectedOutput);
         assert output.equals(expectedOutput);
     }
 }

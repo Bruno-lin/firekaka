@@ -1,6 +1,7 @@
 package css;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Selector {
     String tag_name;
@@ -9,8 +10,8 @@ public class Selector {
 
     public Selector(String tag_name, String id, ArrayList<String> class_array) {
         this.tag_name = tag_name;
-        this.id = id;
-        this.class_array = class_array;
+        this.id = Objects.requireNonNullElse(id, "");
+        this.class_array = Objects.requireNonNullElseGet(class_array, ArrayList::new);
     }
 
     public int specificity() {

@@ -19,27 +19,4 @@ public class Value {
         }
     }
 
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public String getPx() {
-        return px;
-    }
-
-    public void setPx(String px) {
-        this.px = px;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
 }

@@ -10,4 +10,20 @@ public class Rule {
         this.selectors = selectors;
         this.declarations = declarations;
     }
+
+    public ArrayList<Selector> getSelectors() {
+        return selectors;
+    }
+
+    public void setSelectors(ArrayList<Selector> selectors) {
+        this.selectors = selectors;
+    }
+
+    public ArrayList<Declaration> getDeclarations() {
+        return declarations;
+    }
+
+    public void setDeclarations(ArrayList<Declaration> declarations) {
+        this.declarations = declarations;
+    }
 }

@@ -15,8 +15,9 @@ public class HTMLTest {
         HTMLParser parser = new HTMLParser();
         Node node = parser.parse(input);
         String output = node.toString();
-        System.out.println(expectedOutput);
+
         System.out.println(output);
+        System.out.println(expectedOutput);
 
         assert output.equals(expectedOutput);
     }

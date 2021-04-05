@@ -9,6 +9,10 @@ public class Stylesheet {
         this.rules = rules;
     }
 
+    public ArrayList<Rule> getRules() {
+        return rules;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

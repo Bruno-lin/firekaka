@@ -19,7 +19,8 @@ public class CSSParser extends Parser {
      */
     public Stylesheet parse(String source) {
         this.input = source;
-        return new Stylesheet(parse_rules());
+        Stylesheet stylesheet = new Stylesheet(parse_rules());
+        return stylesheet;
     }
 
     /**
@@ -38,7 +39,8 @@ public class CSSParser extends Parser {
      * parse一个规则
      */
     public Rule parse_rule() {
-        return new Rule(parse_selectors(), parse_declarations());
+        Rule rule = new Rule(parse_selectors(), parse_declarations());
+        return rule;
     }
 
     /**
@@ -62,7 +64,6 @@ public class CSSParser extends Parser {
                 break;
             }
         }
-
         return selector;
     }
 
@@ -83,7 +84,6 @@ public class CSSParser extends Parser {
         }
         //首先返回具有最高优先级的选择器，以用于匹配。
         selectors.sort(Comparator.comparingInt(Selector::specificity));
-
         return selectors;
     }
 
@@ -108,7 +108,8 @@ public class CSSParser extends Parser {
         String value = parse_value();
         consume_whitespace();
         assert consume_char() == ';';
-        return new Declaration(property_name, value);
+        Declaration declaration = new Declaration(property_name, value);
+        return declaration;
     }
 
     /**

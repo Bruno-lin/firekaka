@@ -1,7 +1,7 @@
 package dom;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ElementNode extends Node {
 
@@ -12,7 +12,16 @@ public class ElementNode extends Node {
         this.children = children;
     }
 
-    public ElementNode() {
+    public String getID() {
+        String s = attrs.get("id");
+        return Objects.requireNonNullElse(s, "");
+    }
 
+    public Set<String> getClassName() {
+        String className = Objects.requireNonNullElse(attrs.get("class"), "");
+        return Arrays.stream(className.split(" ")).collect(Collectors.toSet());
+    }
+    public ElementNode() {
+        super();
     }
 }

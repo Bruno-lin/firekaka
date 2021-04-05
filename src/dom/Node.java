@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Node {
-
+    //标签
     public String tag_name;
-
     // 所有节点共用数据:
     public ArrayList<Node> children;
     //每个节点类型的数据:
     public String node_type;
-
+    //存储节点里选择器和值
     public Map<String, String> attrs;
-
 
     public Node() {
 

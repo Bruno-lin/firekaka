@@ -8,19 +8,19 @@ import java.util.*;
 
 public class StyledNode {
 
-    private Node domNode;
-    private Map<String, String> propertyMap;
-    private ArrayList<StyledNode> children;
+    public Node domNode;
+    public Map<String, Value> specified_values;
+    public ArrayList<StyledNode> children;
 
     /**
      * 设置整个DOM树的样式，返回一棵StyledNode树
      */
     public StyledNode(Node domNode, Stylesheet stylesheet) {
-        Map<String, String> propertyMap;
+        Map<String, Value> specified_values;
         if (domNode.node_type.equals("element")) {
-            propertyMap = specified_values((ElementNode) domNode, stylesheet);
+            specified_values = specified_values((ElementNode) domNode, stylesheet);
         } else {
-            propertyMap = new LinkedHashMap<>();
+            specified_values = new LinkedHashMap<>();
         }
         ArrayList<StyledNode> children = new ArrayList<>();
         if (domNode.children != null) {
@@ -29,7 +29,7 @@ public class StyledNode {
             }
         }
         this.domNode = domNode;
-        this.propertyMap = propertyMap;
+        this.specified_values = specified_values;
         this.children = children;
     }
 
@@ -63,13 +63,8 @@ public class StyledNode {
         //将rule的每一个选择器都与selector配对
         for (Selector selector : rule.getSelectors()) {
             // 找到第一个（即优先级最高的）选择器
-            System.out.println(elementNode.tag_name);
-            System.out.println("///");
-            System.out.println(selector.tag_name);
-            System.out.println(matches(elementNode, selector));
             if (matches(elementNode, selector)) {
                 MatchedRule matchedRule = new MatchedRule(selector.specificity(), rule);
-//                System.out.println(matchedRule);
                 return matchedRule;
             }
         }
@@ -93,20 +88,35 @@ public class StyledNode {
     /**
      * 计算一个元素的样式指定值，用一个HashMap返回
      */
-    public Map<String, String> specified_values(ElementNode elementNode, Stylesheet stylesheet) {
-        Map<String, String> values = new LinkedHashMap<>();
+    public Map<String, Value> specified_values(ElementNode elementNode, Stylesheet stylesheet) {
+        Map<String, Value> values = new LinkedHashMap<>();
         ArrayList<MatchedRule> rules = matching_rules(elementNode, stylesheet);
         //按照优先级从低到高遍历
         rules.sort(Comparator.comparingInt(matchedRule -> matchedRule.specificity));
         Collections.reverse(rules);
         for (MatchedRule matchRule : rules) {
             for (Declaration declaration : matchRule.rule.getDeclarations()) {
-                if (!values.containsKey(declaration.getName())) {
-                    values.put(declaration.getName(), declaration.getValue());
+                if (!values.containsKey(declaration.name)) {
+                    values.put(declaration.name, declaration.value);
                 }
             }
         }
         return values;
+    }
+
+    /**
+     * 逐个查看每个DOM节点的display属性,并且获得display的值,没有值返回inline
+     */
+    public Display display() {
+        String value = Objects.requireNonNullElse(specified_values.get("display").toString(),"");
+        switch (value) {
+            case "block":
+                return Display.Block;
+            case "none" :
+                return Display.None;
+            default:
+                return Display.Inline;
+        }
     }
 
     /**
@@ -122,10 +132,10 @@ public class StyledNode {
     private StringBuilder sout(StyledNode styledNode, StringBuilder sb, int num) {
         String indent = "  ";
         sb.append(indent.repeat(num)).append("<").append(styledNode.domNode.tag_name);
-        Map<String, String> map = styledNode.propertyMap;
+        Map<String, Value> map = styledNode.specified_values;
         if (map != null) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                sb.append(" ").append(entry.getKey()).append("=").append("\"").append(entry.getValue()).append("\"");
+            for (Map.Entry<String, Value> entry : map.entrySet()) {
+                sb.append(" ").append(entry.getKey()).append("=").append("\"").append(entry.getValue().toString()).append("\"");
             }
         }
         sb.append(">\n");

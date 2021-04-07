@@ -25,7 +25,7 @@ public class StyleTest {
         String output = root.toString();
 
         System.out.println(output);
-        //System.out.println(expectedOutput);
+        System.out.println(expectedOutput);
 
         assert output.equals(expectedOutput);
     }

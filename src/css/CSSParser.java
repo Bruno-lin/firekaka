@@ -55,7 +55,8 @@ public class CSSParser extends Parser {
                 selector.id = parse_identifier();
             } else if (c == '.') {
                 consume_char();
-                selector.class_array.add(parse_identifier());
+                String s = parse_identifier();
+                selector.class_array.add(s);
             } else if (c == '*') {
                 consume_char();
             } else if (valid_identifier_char(c)) {

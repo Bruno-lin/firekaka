@@ -15,15 +15,8 @@ public class Rule {
         return selectors;
     }
 
-    public void setSelectors(ArrayList<Selector> selectors) {
-        this.selectors = selectors;
-    }
-
     public ArrayList<Declaration> getDeclarations() {
         return declarations;
     }
 
-    public void setDeclarations(ArrayList<Declaration> declarations) {
-        this.declarations = declarations;
-    }
 }

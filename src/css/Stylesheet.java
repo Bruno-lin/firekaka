@@ -43,7 +43,7 @@ public class Stylesheet {
             sb.append(" {\n");
 
             for (Declaration declaration : rule.declarations) {
-                sb.append("  ").append(declaration.name).append(": ").append(declaration.value).append(";\n");
+                sb.append("  ").append(declaration.name).append(": ").append(declaration.value.toString()).append(";\n");
             }
             sb.append("}\n\n");
         }

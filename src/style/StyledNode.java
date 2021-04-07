@@ -42,8 +42,11 @@ public class StyledNode {
             if (selector.tag_name.equals("") && !elementNode.get_class_array().isEmpty() && !selector.class_array.isEmpty()
                     && elementNode.get_class_array().containsAll(selector.class_array) ) {
                 return true;
+            }else if (selector.tag_name.equals("") && !elementNode.get_id().equals("") && !selector.id.equals("")
+                    && elementNode.get_id().equals(selector.id)){
+                return true;
             }
-            return false;
+                return false;
         }else if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
             return false;
         }else if (selector.class_array.size() == 0) {
@@ -56,6 +59,21 @@ public class StyledNode {
             }
             return true;
         }
+//        if (!elementNode.tag_name.equals(selector.tag_name) && !selector.tag_name.equals("*") && !selector.tag_name.equals("")) {
+//            return false;
+//        }
+//        if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
+//            return false;
+//        }
+//        if (selector.class_array.size() == 0) {
+//            return true;
+//        }
+//        for (String s : selector.class_array) {
+//            if (!elementNode.get_class_array().contains(s)) {
+//                return false;
+//            }
+//        }
+//        return true;
     }
 
     /**

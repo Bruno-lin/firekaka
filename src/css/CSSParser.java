@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
 
 public class CSSParser extends Parser {
 
-    public Selector selector;
-
     /**
      * 构造函数
      */
@@ -49,7 +47,7 @@ public class CSSParser extends Parser {
      * parse分好的选择器
      */
     public Selector parse_selector() {
-        selector = new Selector("", null, new ArrayList<>());
+        Selector selector = new Selector("", null, new ArrayList<>());
         while (!eof()) {
             char c = next_char();
             if (c == '#') {

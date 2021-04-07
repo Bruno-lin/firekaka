@@ -38,22 +38,24 @@ public class StyledNode {
      */
 
     public boolean matches(ElementNode elementNode, Selector selector) {
-        if (!elementNode.tag_name.equals(selector.tag_name)) {
+        if (!elementNode.tag_name.equals(selector.tag_name) ) {
+            if (selector.tag_name.equals("") && !elementNode.get_class_array().isEmpty() && !selector.class_array.isEmpty()
+                    && elementNode.get_class_array().containsAll(selector.class_array) ) {
+                return true;
+            }
             return false;
-        }
-        if (!elementNode.getID().equals(selector.id) && !selector.id.equals("")) {
+        }else if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
             return false;
-        }
-
-        if (selector.class_array.size() == 0) {
+        }else if (selector.class_array.size() == 0) {
+            return true;
+        }else {
+            for (String s : selector.class_array) {
+                if (!elementNode.get_class_array().contains(s)) {
+                    return false;
+                }
+            }
             return true;
         }
-        for (String s : selector.class_array) {
-            if (!elementNode.getClassName().contains(s)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -63,7 +65,15 @@ public class StyledNode {
         //将rule的每一个选择器都与selector配对
         for (Selector selector : rule.getSelectors()) {
             // 找到第一个（即优先级最高的）选择器
+
             if (matches(elementNode, selector)) {
+//                System.out.println("--1--");
+//                System.out.println(elementNode.tag_name);
+//                System.out.println(elementNode.get_class_array());
+//                System.out.println("--2--");
+//                System.out.println(selector.tag_name);
+//                System.out.println(selector.class_array);
+
                 MatchedRule matchedRule = new MatchedRule(selector.specificity(), rule);
                 return matchedRule;
             }
@@ -108,14 +118,29 @@ public class StyledNode {
      * 逐个查看每个DOM节点的display属性,并且获得display的值,没有值返回inline
      */
     public Display display() {
-        String value = Objects.requireNonNullElse(specified_values.get("display").toString(),"");
+        String value = Objects.requireNonNullElse(specified_values.get("display").toString(), "");
         switch (value) {
             case "block":
                 return Display.Block;
-            case "none" :
+            case "none":
                 return Display.None;
             default:
                 return Display.Inline;
+        }
+    }
+
+    /**
+     * 这个函数在CSS中先查询第一个参数所代表的属性.
+     * 如果没找到就再查询第二个参数代表的属性，如果还没找到，就把第三个参数作为默认值返回。
+     */
+
+    public Value lookup(String name, String fallback_name, Value option) {
+        if (specified_values.get(name) != null) {
+            return specified_values.get(name);
+        } else if (specified_values.get(fallback_name) != null) {
+            return specified_values.get(fallback_name);
+        } else {
+            return option;
         }
     }
 

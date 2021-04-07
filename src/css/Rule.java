@@ -19,4 +19,12 @@ public class Rule {
         return declarations;
     }
 
+    @Override
+    public String toString() {
+        return "Rule{" +
+                "selectors=" + selectors +
+                ", declarations=" + declarations +
+                '}';
+    }
+
 }

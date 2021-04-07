@@ -1,8 +1,8 @@
 package layout;
 
 public class EdgeSizes {
-    int left;
-    int right;
-    int top;
-    int bottom;
+    public int left;
+    public int right;
+    public int top;
+    public int bottom;
 }

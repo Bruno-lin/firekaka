@@ -20,6 +20,7 @@ public class StyleTest {
 
         CSSParser cssParser = new CSSParser();
         Stylesheet stylesheet = cssParser.parse(cssInput);
+        System.out.println(cssParser.selector.class_array);
 
         StyledNode root = new StyledNode(domNode, stylesheet);
         String output = root.toString();

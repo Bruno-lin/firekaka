@@ -12,12 +12,12 @@ public class ElementNode extends Node {
         this.children = children;
     }
 
-    public String getID() {
+    public String get_id() {
         String s = attrs.get("id");
         return Objects.requireNonNullElse(s, "");
     }
 
-    public Set<String> getClassName() {
+    public Set<String> get_class_array() {
         String className = Objects.requireNonNullElse(attrs.get("class"), "");
         return Arrays.stream(className.split(" ")).collect(Collectors.toSet());
     }

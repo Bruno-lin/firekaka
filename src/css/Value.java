@@ -15,6 +15,9 @@ public class Value {
         } else if (val.endsWith("px")) {
             valueType = ValueType.SIZE;
             text = val.substring(0, val.length() - 2);
+        } else if (val.equals("auto")) {
+            valueType = ValueType.SIZE;
+            text = val;
         } else {
             valueType = ValueType.KEYWORD;
             text = val;
@@ -23,17 +26,29 @@ public class Value {
 
     @Override
     public String toString() {
-
         if (valueType.equals(ValueType.COLOR) && text != null) {
             if (!text.equals("")) {
                 return "#" + text;
             } else {
                 return "initial";
             }
-        } else if (valueType.equals(ValueType.KEYWORD)) {
-            return text;
+        } else if (valueType.equals(ValueType.SIZE) && text != null) {
+            if (text.equals("auto")) {
+                return text;
+            } else {
+                return text + "px";
+            }
         } else {
-            return text + "px";
+            return text;
+        }
+    }
+
+    public int to_px() {
+        if (!text.equals("auto")) {
+            int px = Integer.parseInt(text);
+            return px;
+        } else {
+            return 0;
         }
     }
 }

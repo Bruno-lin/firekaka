@@ -11,7 +11,7 @@ public class Selector {
     public Selector(String tag_name, String id, ArrayList<String> class_array) {
         this.tag_name = tag_name;
         this.id = Objects.requireNonNullElse(id, "");
-        this.class_array = Objects.requireNonNullElseGet(class_array, ArrayList::new);
+        this.class_array = Objects.requireNonNullElse(class_array, new ArrayList<>());
     }
 
     public int specificity() {
@@ -30,5 +30,14 @@ public class Selector {
             c += 1;
         }
         return a + b + c;
+    }
+
+    @Override
+    public String toString() {
+        return "Selector{" +
+                "tag_name='" + tag_name + '\'' +
+                ", id='" + id + '\'' +
+                ", class_array=" + class_array +
+                '}';
     }
 }

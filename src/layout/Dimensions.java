@@ -1,10 +1,10 @@
 package layout;
 
 public class Dimensions {
-    Rect content;
-    EdgeSizes padding;
-    EdgeSizes border;
-    EdgeSizes margin;
+    public Rect content;
+    public EdgeSizes padding;
+    public EdgeSizes border;
+    public EdgeSizes margin;
 
     public Dimensions() {
         content = new Rect();

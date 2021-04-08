@@ -3,24 +3,25 @@ package style;
 import css.*;
 import dom.ElementNode;
 import dom.Node;
+import layout.Type;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class StyledNode {
 
     public Node domNode;
-    public Map<String, Value> specified_values;
+    public Map<String, Value> propertyMap;
     public ArrayList<StyledNode> children;
 
-    /**
-     * 设置整个DOM树的样式，返回一棵StyledNode树
-     */
+
     public StyledNode(Node domNode, Stylesheet stylesheet) {
-        Map<String, Value> specified_values;
+
+        Map<String, Value> propertyMap;
         if (domNode.node_type.equals("element")) {
-            specified_values = specified_values((ElementNode) domNode, stylesheet);
+            propertyMap = specifiedValues((ElementNode) domNode, stylesheet);
         } else {
-            specified_values = new LinkedHashMap<>();
+            propertyMap = new LinkedHashMap<>();
         }
         ArrayList<StyledNode> children = new ArrayList<>();
         if (domNode.children != null) {
@@ -29,67 +30,70 @@ public class StyledNode {
             }
         }
         this.domNode = domNode;
-        this.specified_values = specified_values;
+        this.propertyMap = propertyMap;
         this.children = children;
     }
 
     /**
-     * 元素节点与选择器是否匹配
+     * @return display类别，
      */
+    public Type display() {
+        String display = getAttValue("display").toString();
+        switch (display) {
+            case "":
+            case "inline":
+                return Type.InlineNode;
+            case "none":
+            case "block":
+                return Type.BlockNode;
+            default:
+                return Type.AnonymousBlock;
+        }
+    }
 
-    public boolean matches(ElementNode elementNode, Selector selector) {
-
-        if (!elementNode.tag_name.equals(selector.tag_name)
-                && !selector.tag_name.equals("*") && !selector.tag_name.equals("")) {
-            //判断标签是否相同 或 选择器是否为全局选择器
-            return false;
-        } else if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
-            //判断id是否相同 或 id是否为 空 字符
-            return false;
-        } else if (selector.class_array.size() == 0) {
-            //判断是否有类选择器
-            return true;
-        } else if (!elementNode.get_class_array().containsAll(selector.class_array)) {
-            //判断类选择其是否相同
-            return false;
-        } else {
-            //匹配相等
-            return true;
+    public Value getAttValue(String att) {
+        if(propertyMap==null||propertyMap.get(att)==null){
+            return new Value("none");
+        }else {
+            return propertyMap.get(att);
         }
     }
 
     /**
-     * 对于树中的当前元素，我们都需要在样式表中搜索匹配的规则。
+     * 元素节点与一条规则是否匹配
+     *
+     * @param elementNode
+     * @param rule
+     * @return 匹配成功返回MatchedRule（选择器优先度，规则指针)，否则返回null
      */
-    public MatchedRule match_rule(ElementNode elementNode, Rule rule) {
+    private MatchedRule matchRule(ElementNode elementNode, Rule rule) {
         //将rule的每一个选择器都与selector配对
         for (Selector selector : rule.getSelectors()) {
-            // 找到第一个（即优先级最高的）选择器
-//            System.out.println("--1--");
-//            System.out.println(elementNode.tag_name);
-//            System.out.println(elementNode.get_class_array());
-//            System.out.println(elementNode.get_id());
-//            System.out.println("--2--");
-//            System.out.println(selector.tag_name);
-//            System.out.println(selector.class_array);
-//            System.out.println(selector.id);
-//            System.out.println("--3--");
-            if (matches(elementNode, selector)) {
+            if (mathches(elementNode, selector)) {
+                System.out.println("--1--");
+                System.out.println(elementNode.tag_name);
+                System.out.println(elementNode.get_class_array());
+                System.out.println("--2--");
+                System.out.println(selector.tag_name);
+                System.out.println(selector.class_array);
 
-                MatchedRule matchedRule = new MatchedRule(selector.specificity(), rule);
-                return matchedRule;
+                return new MatchedRule(selector.specificity(), rule);
             }
         }
         return null;
     }
 
     /**
-     * 从样式表中搜索当前元素节点的匹配规则
+     * 元素节点和CSS对象匹配
+     *
+     * @param elementNode
+     * @param stylesheet
+     * @return 返回所有匹配成功的MatchedRule
      */
-    public ArrayList<MatchedRule> matching_rules(ElementNode elementNode, Stylesheet stylesheet) {
+    private ArrayList<MatchedRule> matchRules(ElementNode elementNode, Stylesheet stylesheet) {
         ArrayList<MatchedRule> specificities = new ArrayList<>();
         for (Rule rule : stylesheet.getRules()) {
-            MatchedRule specificity = match_rule(elementNode, rule);
+            MatchedRule specificity = matchRule(elementNode, rule);
             if (specificity != null) {
                 specificities.add(specificity);
             }
@@ -98,13 +102,18 @@ public class StyledNode {
     }
 
     /**
-     * 计算一个元素的样式指定值，用一个HashMap返回
+     * 元素节点和css对象配对
+     *
+     * @param elementNode
+     * @param stylesheet
+     * @return 返回该元素节点匹配到的属性
      */
-    public Map<String, Value> specified_values(ElementNode elementNode, Stylesheet stylesheet) {
+    private Map<String, Value> specifiedValues(ElementNode elementNode, Stylesheet stylesheet) {
+
         Map<String, Value> values = new LinkedHashMap<>();
-        ArrayList<MatchedRule> rules = matching_rules(elementNode, stylesheet);
-        //按照优先级从低到高遍历
-        rules.sort(Comparator.comparingInt(matchedRule -> matchedRule.specificity));
+        ArrayList<MatchedRule> rules = matchRules(elementNode, stylesheet);
+        //按优先度从高到低匹配
+        rules = rules.stream().sorted(Comparator.comparingInt(a -> a.specificity)).collect(Collectors.toCollection(ArrayList::new));
         Collections.reverse(rules);
         for (MatchedRule matchRule : rules) {
             for (Declaration declaration : matchRule.rule.getDeclarations()) {
@@ -117,64 +126,57 @@ public class StyledNode {
     }
 
     /**
-     * 逐个查看每个DOM节点的display属性,并且获得display的值,没有值返回inline
+     * 元素节点与选择器是否匹配
+     *
+     * @param elementNode
+     * @param selector
+     * @return
      */
-    public Display display() {
-        String value = Objects.requireNonNullElse(specified_values.get("display").toString(), "");
-        switch (value) {
-            case "block":
-                return Display.Block;
-            case "none":
-                return Display.None;
-            default:
-                return Display.Inline;
+    private boolean mathches(ElementNode elementNode, Selector selector) {
+
+
+        if (!elementNode.tag_name.equals(selector.tag_name) && !selector.tag_name.equals("*") && !selector.tag_name.equals("")) {
+            return false;
         }
-    }
-
-    /**
-     * 这个函数在CSS中先查询第一个参数所代表的属性.
-     * 如果没找到就再查询第二个参数代表的属性，如果还没找到，就把第三个参数作为默认值返回。
-     */
-
-    public Value lookup(String name, String fallback_name, Value option) {
-        if (specified_values.get(name) != null) {
-            return specified_values.get(name);
-        } else if (specified_values.get(fallback_name) != null) {
-            return specified_values.get(fallback_name);
-        } else {
-            return option;
+        if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
+            return false;
         }
+        if (selector.class_array.size() == 0) {
+            return true;
+        }
+        for (String s : selector.class_array) {
+            if (!elementNode.get_class_array().contains(s)) {
+                return false;
+            }
+        }
+        return true;
     }
-
-    /**
-     * 重新排版
-     */
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        return sout(this, sb, 0).toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        return sout(this, stringBuilder, 0).toString();
     }
 
-    private StringBuilder sout(StyledNode styledNode, StringBuilder sb, int num) {
+    private StringBuilder sout(StyledNode styledNode, StringBuilder stringBuilder, int num) {
         String indent = "  ";
-        sb.append(indent.repeat(num)).append("<").append(styledNode.domNode.tag_name);
-        Map<String, Value> map = styledNode.specified_values;
+        stringBuilder.append(indent.repeat(num)).append("<").append(styledNode.domNode.tag_name);
+        Map<String, Value> map = styledNode.propertyMap;
         if (map != null) {
             for (Map.Entry<String, Value> entry : map.entrySet()) {
-                sb.append(" ").append(entry.getKey()).append("=").append("\"").append(entry.getValue().toString()).append("\"");
+                stringBuilder.append(" ").append(entry.getKey()).append("=").append("\"").append(entry.getValue().toString()).append("\"");
             }
         }
-        sb.append(">\n");
+        stringBuilder.append(">\n");
         for (StyledNode sn : styledNode.children) {
             if (sn.domNode.node_type.equals("text")) {
-                sb.append(indent.repeat(num + 1)).append("<text></text>\n").append(indent.repeat(num));
+                stringBuilder.append(indent.repeat(num + 1)).append("<text></text>\n").append(indent.repeat(num));
                 num = 0;
                 continue;
             }
-            sb = sout(sn, sb, num + 1);
+            stringBuilder = sout(sn, stringBuilder, num + 1);
         }
-        sb.append(indent.repeat(num)).append("</").append(styledNode.domNode.tag_name).append(">\n");
-        return sb;
+        stringBuilder.append(indent.repeat(num)).append("</").append(styledNode.domNode.tag_name).append(">\n");
+        return stringBuilder;
     }
 }

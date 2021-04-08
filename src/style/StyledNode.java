@@ -38,42 +38,24 @@ public class StyledNode {
      */
 
     public boolean matches(ElementNode elementNode, Selector selector) {
-        if (!elementNode.tag_name.equals(selector.tag_name) ) {
-            if (selector.tag_name.equals("") && !elementNode.get_class_array().isEmpty() && !selector.class_array.isEmpty()
-                    && elementNode.get_class_array().containsAll(selector.class_array) ) {
-                return true;
-            }else if (selector.tag_name.equals("") && !elementNode.get_id().equals("") && !selector.id.equals("")
-                    && elementNode.get_id().equals(selector.id)){
-                return true;
-            }
-                return false;
-        }else if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
+
+        if (!elementNode.tag_name.equals(selector.tag_name)
+                && !selector.tag_name.equals("*") && !selector.tag_name.equals("")) {
+            //判断标签是否相同 或 选择器是否为全局选择器
             return false;
-        }else if (selector.class_array.size() == 0) {
+        } else if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
+            //判断id是否相同 或 id是否为 空 字符
+            return false;
+        } else if (selector.class_array.size() == 0) {
+            //判断是否有类选择器
             return true;
-        }else {
-            for (String s : selector.class_array) {
-                if (!elementNode.get_class_array().contains(s)) {
-                    return false;
-                }
-            }
+        } else if (!elementNode.get_class_array().containsAll(selector.class_array)) {
+            //判断类选择其是否相同
+            return false;
+        } else {
+            //匹配相等
             return true;
         }
-//        if (!elementNode.tag_name.equals(selector.tag_name) && !selector.tag_name.equals("*") && !selector.tag_name.equals("")) {
-//            return false;
-//        }
-//        if (!elementNode.get_id().equals(selector.id) && !selector.id.equals("")) {
-//            return false;
-//        }
-//        if (selector.class_array.size() == 0) {
-//            return true;
-//        }
-//        for (String s : selector.class_array) {
-//            if (!elementNode.get_class_array().contains(s)) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
 
     /**
@@ -83,14 +65,16 @@ public class StyledNode {
         //将rule的每一个选择器都与selector配对
         for (Selector selector : rule.getSelectors()) {
             // 找到第一个（即优先级最高的）选择器
-
+            System.out.println("--1--");
+            System.out.println(elementNode.tag_name);
+            System.out.println(elementNode.get_class_array());
+            System.out.println(elementNode.get_id());
+            System.out.println("--2--");
+            System.out.println(selector.tag_name);
+            System.out.println(selector.class_array);
+            System.out.println(selector.id);
+            System.out.println("--3--");
             if (matches(elementNode, selector)) {
-//                System.out.println("--1--");
-//                System.out.println(elementNode.tag_name);
-//                System.out.println(elementNode.get_class_array());
-//                System.out.println("--2--");
-//                System.out.println(selector.tag_name);
-//                System.out.println(selector.class_array);
 
                 MatchedRule matchedRule = new MatchedRule(selector.specificity(), rule);
                 return matchedRule;

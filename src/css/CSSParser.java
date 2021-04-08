@@ -48,21 +48,36 @@ public class CSSParser extends Parser {
      */
     public Selector parse_selector() {
         Selector selector = new Selector("", null, new ArrayList<>());
+
+
+
+
+        label:
         while (!eof()) {
             char c = next_char();
-            if (c == '#') {
-                consume_char();
-                selector.id = parse_identifier();
-            } else if (c == '.') {
-                consume_char();
-                String s = parse_identifier();
-                selector.class_array.add(s);
-            } else if (c == '*') {
-                consume_char();
-            } else if (valid_identifier_char(c)) {
+            consume_whitespace();
+            if (valid_identifier_char(c)) {
                 selector.tag_name = parse_identifier();
-            } else {
-                break;
+            }
+            switch (c) {
+                case '#':
+                    consume_char();
+                    selector.id = parse_identifier();
+                    break;
+                case '.':
+                    consume_char();
+                    String s = parse_identifier();
+                    selector.class_array.add(s);
+                    break;
+                case '*':
+                    consume_char();
+                    selector.tag_name = "*";
+                    break;
+                case '{':
+                    break label;
+                case ',':
+                    consume_char();
+                    break label;
             }
         }
         return selector;

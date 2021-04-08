@@ -61,7 +61,8 @@ public class LayoutBox {
      * 处理内联（inline）子节点
      */
     public LayoutBox get_inline_container() {
-        if (boxType.type.equals(Type.BlockNode)) {//如果已经创建过了匿名块级盒子，直接使用。否则创建一个新的匿名块级盒子。
+        if (boxType.type.equals(Type.BlockNode)) {
+            //如果已经创建过了匿名块级盒子，直接使用。否则创建一个新的匿名块级盒子。
             if (!children.get(children.size() - 1).boxType.type.equals(Type.AnonymousBlock)) {
                 LayoutBox anonymousBlock = new LayoutBox();
                 children.add(anonymousBlock);
@@ -126,8 +127,6 @@ public class LayoutBox {
         if (!width.equals(auto) && total > node_width) {
             if (margin_left == auto) {
                 margin_left = zero;
-            } else if (margin_right == zero) {
-                margin_right = zero;
             }
         }
         //比容器小时，会留下一些空间，则称为下溢出（underflow）
@@ -140,7 +139,7 @@ public class LayoutBox {
 
         // 都不是auto，调整右margin
         if (!bool_1 && !bool_2 && !bool_3) {
-            margin_right = new Value((margin_left.to_px() + underflow) + "px");
+            margin_right = new Value((margin_right.to_px() + underflow) + "px");
         } else if (!bool_1 && !bool_2 && bool_3) {
             // 有一个margin是auto，就调整那个margin
             margin_right = new Value(underflow + "px");
@@ -158,7 +157,7 @@ public class LayoutBox {
             } else {
                 // 上溢出，调整width。但width最多调整到0，不能为负。如果还不够的话，就要调整右margin。
                 width = zero;
-                margin_right = new Value((margin_left.to_px() + underflow) + "px");
+                margin_right = new Value((margin_right.to_px() + underflow) + "px");
             }
         } else if (!bool_1 && bool_2 && bool_3) {
             // 如果左右margin都是auto，按照左右margin相等的原则进行调整

@@ -65,15 +65,15 @@ public class StyledNode {
         //将rule的每一个选择器都与selector配对
         for (Selector selector : rule.getSelectors()) {
             // 找到第一个（即优先级最高的）选择器
-            System.out.println("--1--");
-            System.out.println(elementNode.tag_name);
-            System.out.println(elementNode.get_class_array());
-            System.out.println(elementNode.get_id());
-            System.out.println("--2--");
-            System.out.println(selector.tag_name);
-            System.out.println(selector.class_array);
-            System.out.println(selector.id);
-            System.out.println("--3--");
+//            System.out.println("--1--");
+//            System.out.println(elementNode.tag_name);
+//            System.out.println(elementNode.get_class_array());
+//            System.out.println(elementNode.get_id());
+//            System.out.println("--2--");
+//            System.out.println(selector.tag_name);
+//            System.out.println(selector.class_array);
+//            System.out.println(selector.id);
+//            System.out.println("--3--");
             if (matches(elementNode, selector)) {
 
                 MatchedRule matchedRule = new MatchedRule(selector.specificity(), rule);

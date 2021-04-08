@@ -140,10 +140,10 @@ public class LayoutBox {
         // 都不是auto，调整右margin
         if (!bool_1 && !bool_2 && !bool_3) {
             margin_right = new Value((margin_right.to_px() + underflow) + "px");
-        } else if (!bool_1 && !bool_2 && bool_3) {
+        } else if (!bool_1 && !bool_2) {
             // 有一个margin是auto，就调整那个margin
             margin_right = new Value(underflow + "px");
-        } else if (!bool_1 && bool_2 && !bool_3) {
+        } else if (!bool_1 && !bool_3) {
             margin_left = new Value(underflow + "px");
         } else if (bool_1) {
             // width是auto，则其他的auto设置为0，然后主要调整width就够了
@@ -159,7 +159,7 @@ public class LayoutBox {
                 width = zero;
                 margin_right = new Value((margin_right.to_px() + underflow) + "px");
             }
-        } else if (!bool_1 && bool_2 && bool_3) {
+        } else {
             // 如果左右margin都是auto，按照左右margin相等的原则进行调整
             margin_left = new Value(underflow / 2 + "px");
             margin_right = new Value(underflow / 2 + "px");

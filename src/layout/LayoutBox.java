@@ -40,7 +40,7 @@ public class LayoutBox {
      * 建立布局树
      */
     public LayoutBox build_layout_tree(LayoutBox box) {
-        StyledNode node=box.boxType.styledNode;
+        StyledNode node = box.boxType.styledNode;
 
         for (StyledNode child : node.children) {
             switch (child.display()) {
@@ -127,6 +127,9 @@ public class LayoutBox {
         if (!width.equals(auto) && total > node_width) {
             if (margin_left == auto) {
                 margin_left = zero;
+            }
+            if (margin_right == auto) {
+                margin_right = zero;
             }
         }
         //比容器小时，会留下一些空间，则称为下溢出（underflow）
@@ -250,7 +253,7 @@ public class LayoutBox {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        return output(this,sb,0).toString();
+        return output(this, sb, 0).toString();
     }
 
 

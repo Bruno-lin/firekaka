@@ -67,8 +67,7 @@ public class Paint {
         int r = Integer.parseInt(s.substring(1, 3), 16);
         int g = Integer.parseInt(s.substring(3, 5), 16);
         int b = Integer.parseInt(s.substring(5, 7), 16);
-        int a = 255;
-        return new Color(r, g, b, a);
+        return new Color(r, g, b);
     }
 
     /**
@@ -112,7 +111,7 @@ public class Paint {
 
         // 创建图片
 
-        BufferedImage image = new BufferedImage(canvas_width, canvas_height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(canvas_width, canvas_height, BufferedImage.TYPE_INT_RGB);
         for (int y = 0; y < canvas_height; y++) {
             for (int x = 0; x < canvas_width; x++) {
                 Color color = canvas.pixels.get(x + y * canvas_width);

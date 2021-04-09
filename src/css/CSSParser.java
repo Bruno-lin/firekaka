@@ -31,6 +31,7 @@ public class CSSParser extends Parser {
         ArrayList<Rule> rules = new ArrayList<>();
         while (!eof()) {
             rules.add(parse_rule());
+            consume_whitespace();
         }
         return rules;
     }

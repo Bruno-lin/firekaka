@@ -42,7 +42,6 @@ public class Parser {
 
     /**
      * 消耗字符，直到`test`返回false为止
-     *
      */
     public String consume_while(Predicate<Character> predicate, char c) {
         StringBuilder sb = new StringBuilder();
@@ -61,6 +60,9 @@ public class Parser {
         }
         while (Character.isWhitespace(next_char())) {
             consume_char();
+            if (eof()) {
+                return;
+            }
         }
     }
 }

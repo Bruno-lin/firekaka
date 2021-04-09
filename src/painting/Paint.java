@@ -37,10 +37,12 @@ public class Paint {
      */
     public void render_background(ArrayList<DisplayCommand> list, LayoutBox layout_box) {
         Color color = get_color(layout_box, "background");
-        if (color == null) {
-            return;
+        Color color1 = get_color(layout_box, "background-color");
+        if (color == null && color1 != null) {
+            list.add(new DisplayCommand(color1, layout_box.dimensions.border_box()));
+        } else if (color != null && color1 == null) {
+            list.add(new DisplayCommand(color, layout_box.dimensions.border_box()));
         }
-        list.add(new DisplayCommand(color, layout_box.dimensions.border_box()));
     }
 
     /**
@@ -48,11 +50,12 @@ public class Paint {
      */
     public Color get_color(LayoutBox layout_box, String name) {
         Type type = layout_box.boxType.type;
+        String match = layout_box.boxType.styledNode.getAttValue(name).toString();
         switch (type) {
             case BlockNode:
             case InlineNode:
-                if (!layout_box.boxType.styledNode.getAttValue(name).toString().equals("none")) {
-                    return string_to_color(layout_box.boxType.styledNode.getAttValue(name).toString());
+                if (!match.equals("none")) {
+                    return string_to_color(match);
                 } else {
                     break;
                 }
@@ -63,7 +66,6 @@ public class Paint {
     }
 
     private Color string_to_color(String s) {
-
         int r = Integer.parseInt(s.substring(1, 3), 16);
         int g = Integer.parseInt(s.substring(3, 5), 16);
         int b = Integer.parseInt(s.substring(5, 7), 16);

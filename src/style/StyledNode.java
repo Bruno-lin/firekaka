@@ -43,7 +43,6 @@ public class StyledNode {
             case "":
             case "inline":
                 return Type.InlineNode;
-            case "none":
             case "block":
                 return Type.BlockNode;
             default:

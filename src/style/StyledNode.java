@@ -52,9 +52,9 @@ public class StyledNode {
     }
 
     public Value getAttValue(String att) {
-        if(propertyMap==null||propertyMap.get(att)==null){
+        if (propertyMap == null || propertyMap.get(att) == null) {
             return new Value("none");
-        }else {
+        } else {
             return propertyMap.get(att);
         }
     }
@@ -69,14 +69,7 @@ public class StyledNode {
     private MatchedRule matchRule(ElementNode elementNode, Rule rule) {
         //将rule的每一个选择器都与selector配对
         for (Selector selector : rule.getSelectors()) {
-            if (mathches(elementNode, selector)) {
-                System.out.println("--1--");
-                System.out.println(elementNode.tag_name);
-                System.out.println(elementNode.get_class_array());
-                System.out.println("--2--");
-                System.out.println(selector.tag_name);
-                System.out.println(selector.class_array);
-
+            if (matches(elementNode, selector)) {
                 return new MatchedRule(selector.specificity(), rule);
             }
         }
@@ -132,7 +125,7 @@ public class StyledNode {
      * @param selector
      * @return
      */
-    private boolean mathches(ElementNode elementNode, Selector selector) {
+    private boolean matches(ElementNode elementNode, Selector selector) {
 
 
         if (!elementNode.tag_name.equals(selector.tag_name) && !selector.tag_name.equals("*") && !selector.tag_name.equals("")) {
